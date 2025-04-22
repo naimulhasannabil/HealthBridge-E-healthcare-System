@@ -1,5 +1,6 @@
 import React from 'react';
 import Sidebar from '../../components/Sidebar';
+import { Clock } from 'lucide-react';
 
 const PatientAppointments = () => {
   const patientMenu = [
@@ -12,126 +13,111 @@ const PatientAppointments = () => {
     { name: 'Settings', path: '/patient/settings', icon: 'cog' },
   ];
 
+  const upcomingAppointments = [
+    {
+      date: '15 May',
+      doctor: 'Dr. Sarah Johnson',
+      type: 'Cardiology Consultation',
+      status: 'Confirmed',
+      time: '10:00 AM - 10:30 AM',
+    },
+    {
+      date: '18 May',
+      doctor: 'Dr. Michael Chen',
+      type: 'Neurology Consultation',
+      status: 'Pending',
+      time: '2:30 PM - 3:00 PM',
+    },
+  ];
+
+  const pastAppointments = [
+    {
+      date: '5 May',
+      doctor: 'Dr. Robert Williams',
+      type: 'General Checkup',
+      status: 'Completed',
+      time: '9:00 AM - 9:30 AM',
+    },
+  ];
+
+  const statusColors = {
+    Confirmed: 'bg-green-100 text-green-700',
+    Pending: 'bg-yellow-100 text-yellow-700',
+    Cancelled: 'bg-red-100 text-red-700',
+    Completed: 'bg-gray-100 text-gray-800',
+  };
+
+  const AppointmentCard = ({ appointment }) => (
+    <div className="flex items-start justify-between p-4 border rounded-lg hover:bg-gray-50 transition">
+      <div className="flex items-start">
+        <div className="h-12 w-12 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-semibold mr-4">
+          {appointment.date}
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">{appointment.doctor}</h3>
+          <p className="text-sm text-gray-500">{appointment.type}</p>
+          <div className="mt-2 flex items-center text-sm text-gray-500">
+            <Clock className="h-4 w-4 mr-1.5" />
+            {appointment.time}
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col items-end justify-between h-full">
+        <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[appointment.status]}`}>
+          {appointment.status}
+        </span>
+        <button className="text-blue-600 hover:text-blue-900 text-sm mt-2">View</button>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar menuItems={patientMenu} userType="Patient" />
-      
-      <div className="flex-1 p-8">
+
+      <div className="flex-1 p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">My Appointments</h1>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-            Book New Appointment
+          <button className="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+            + Book Appointment
           </button>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-800">Upcoming Appointments</h2>
-              <div className="relative">
-                <select className="appearance-none bg-gray-100 border border-gray-300 rounded-md pl-3 pr-8 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>All</option>
-                  <option>Confirmed</option>
-                  <option>Pending</option>
-                  <option>Cancelled</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
+
+        {/* Upcoming Appointments */}
+        <section className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold text-gray-700">Upcoming Appointments</h2>
+            <select className="text-sm bg-gray-100 border border-gray-300 rounded-md py-1 px-3 focus:outline-none">
+              <option>All</option>
+              <option>Confirmed</option>
+              <option>Pending</option>
+              <option>Cancelled</option>
+            </select>
           </div>
-          
-          <div className="divide-y divide-gray-200">
-            <div className="p-4 hover:bg-gray-50 transition">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                  15 May
-                </div>
-                <div className="ml-4 flex-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium text-gray-900">Dr. Sarah Johnson</h3>
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                      Confirmed
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-500">Cardiology Consultation</p>
-                  <div className="mt-2 flex items-center text-sm text-gray-500">
-                    <svg className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    10:00 AM - 10:30 AM
-                  </div>
-                </div>
-                <div className="ml-4 flex-shrink-0">
-                  <button className="text-blue-600 hover:text-blue-900 font-medium">View</button>
-                </div>
-              </div>
+          {upcomingAppointments.length > 0 ? (
+            <div className="space-y-4">
+              {upcomingAppointments.map((appt, i) => (
+                <AppointmentCard key={i} appointment={appt} />
+              ))}
             </div>
-            
-            <div className="p-4 hover:bg-gray-50 transition">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                  18 May
-                </div>
-                <div className="ml-4 flex-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium text-gray-900">Dr. Michael Chen</h3>
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                      Pending
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-500">Neurology Consultation</p>
-                  <div className="mt-2 flex items-center text-sm text-gray-500">
-                    <svg className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    2:30 PM - 3:00 PM
-                  </div>
-                </div>
-                <div className="ml-4 flex-shrink-0">
-                  <button className="text-blue-600 hover:text-blue-900 font-medium">View</button>
-                </div>
-              </div>
+          ) : (
+            <p className="text-gray-500 text-sm">No upcoming appointments.</p>
+          )}
+        </section>
+
+        {/* Past Appointments */}
+        <section className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">Past Appointments</h2>
+          {pastAppointments.length > 0 ? (
+            <div className="space-y-4">
+              {pastAppointments.map((appt, i) => (
+                <AppointmentCard key={i} appointment={appt} />
+              ))}
             </div>
-          </div>
-        </div>
-        
-        <div className="mt-8 bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Past Appointments</h2>
-          </div>
-          
-          <div className="divide-y divide-gray-200">
-            <div className="p-4 hover:bg-gray-50 transition">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-semibold">
-                  5 May
-                </div>
-                <div className="ml-4 flex-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium text-gray-900">Dr. Robert Williams</h3>
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                      Completed
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-500">General Checkup</p>
-                  <div className="mt-2 flex items-center text-sm text-gray-500">
-                    <svg className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    9:00 AM - 9:30 AM
-                  </div>
-                </div>
-                <div className="ml-4 flex-shrink-0">
-                  <button className="text-blue-600 hover:text-blue-900 font-medium">View</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          ) : (
+            <p className="text-gray-500 text-sm">No past appointments found.</p>
+          )}
+        </section>
       </div>
     </div>
   );
