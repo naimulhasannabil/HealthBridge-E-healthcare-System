@@ -5,7 +5,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-blue-600 text-white shadow-md">
+    <nav className="sticky top-0 z-50 bg-blue-600/60 backdrop-blur-md text-white shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold flex items-center">
