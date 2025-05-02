@@ -27,27 +27,25 @@ const Login = () => {
     try {
       const response = await axios.post('http://localhost:8000/auth/login', formData);
   
-      const token = response.data.access_token;
-      localStorage.setItem('token', token);
+      // Save token
+      localStorage.setItem('token', response.data.access_token);
   
-      // 🧠 Now fetch the current user's info (like role)
-      const userResponse = await axios.get('http://localhost:8000/auth/me', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // Get role from response (adjust this if your backend structure is different)
+      const role = response.data.role;
   
-      const user = userResponse.data;
-  
-      // 🎯 Redirect based on user role
-      if (user.role === 'patient') {
-        navigate('/patient');
-      } else if (user.role === 'doctor') {
-        navigate('/doctor');
-      } else if (user.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/'); // Default fallback
+      // Redirect based on role
+      switch (role) {
+        case 'patient':
+          navigate('/patient');
+          break;
+        case 'doctor':
+          navigate('/doctor');
+          break;
+        case 'admin':
+          navigate('/admin');
+          break;
+        default:
+          navigate('/'); // fallback
       }
   
     } catch (error) {

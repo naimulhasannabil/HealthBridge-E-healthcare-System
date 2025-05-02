@@ -40,7 +40,8 @@ def login(credentials: Login, db: Session = Depends(get_db)):
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     token_data = {"sub": user.email, "id": user.id, "role": user.role, "exp": expire}
     token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "role": user.role}
+
 
 from fastapi.security import OAuth2PasswordBearer
 
