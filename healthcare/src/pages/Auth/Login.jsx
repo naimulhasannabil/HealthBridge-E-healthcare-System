@@ -23,22 +23,38 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     try {
       const response = await axios.post('http://localhost:8000/auth/login', formData);
-
-      // Save token to localStorage (optional but recommended)
-      localStorage.setItem('token', response.data.access_token);
-
-      // Redirect based on user role (optional logic if your backend returns user role)
-      // Example: navigate('/patient') or navigate('/doctor') after fetching user info
-
-      navigate('/patient'); // Default to patient dashboard
-
+  
+      const token = response.data.access_token;
+      localStorage.setItem('token', token);
+  
+      // 🧠 Now fetch the current user's info (like role)
+      const userResponse = await axios.get('http://localhost:8000/auth/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const user = userResponse.data;
+  
+      // 🎯 Redirect based on user role
+      if (user.role === 'patient') {
+        navigate('/patient');
+      } else if (user.role === 'doctor') {
+        navigate('/doctor');
+      } else if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/'); // Default fallback
+      }
+  
     } catch (error) {
       setError(error.response?.data?.detail || 'Login failed.');
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
