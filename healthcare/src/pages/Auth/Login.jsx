@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
 const Login = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
@@ -26,17 +25,20 @@ const Login = () => {
 
     try {
       const response = await axios.post('http://localhost:8000/auth/login', formData);
-
-      // Save token to localStorage (optional but recommended)
-      localStorage.setItem('token', response.data.access_token);
-
-      // Redirect based on user role (optional logic if your backend returns user role)
-      // Example: navigate('/patient') or navigate('/doctor') after fetching user info
-
-      navigate('/patient'); // Default to patient dashboard
+      const token = response.data.access_token;
+      
+      // Store token
+      localStorage.setItem('token', token);
+      
+      // Decode token to get user role
+      const decodedToken = jwt_decode(token);
+      const userRole = decodedToken.role.toLowerCase();
+      
+      // Redirect based on role
+      navigate(`/${userRole}`);
 
     } catch (error) {
-      setError(error.response?.data?.detail || 'Login failed.');
+      setError(error.response?.data?.detail || 'Login failed. Please check your credentials.');
     }
   };
 
@@ -59,7 +61,6 @@ const Login = () => {
           {error && <p className="text-red-500 mb-4">{error}</p>}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
@@ -77,7 +78,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
@@ -95,7 +95,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Remember Me and Forgot Password */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
@@ -116,7 +115,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div>
               <button
                 type="submit"
@@ -125,7 +123,6 @@ const Login = () => {
                 Sign in
               </button>
             </div>
-
           </form>
         </div>
       </div>
