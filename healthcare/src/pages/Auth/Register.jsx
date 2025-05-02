@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const Register = () => {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,8 +12,8 @@ const Register = () => {
     confirmPassword: '',
     role: 'patient',
   });
+
   const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,12 +26,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setIsSubmitting(true);
 
-    // Frontend validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match.');
-      setIsSubmitting(false);
       return;
     }
 
@@ -43,15 +41,11 @@ const Register = () => {
       };
 
       await axios.post('http://localhost:8000/auth/register', registerData);
+
       navigate('/login');
 
     } catch (error) {
-      const errorMessage = error.response?.data?.detail || 
-                          error.message || 
-                          'Registration failed. Please try again.';
-      setError(errorMessage);
-    } finally {
-      setIsSubmitting(false);
+      setError(error.response?.data?.detail || 'Registration failed.');
     }
   };
 
@@ -71,7 +65,7 @@ const Register = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+          {error && <p className="text-red-500 mb-4">{error}</p>}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Name */}
@@ -121,7 +115,6 @@ const Register = () => {
                   name="password"
                   type="password"
                   required
-                  minLength="6"
                   value={formData.password}
                   onChange={handleChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -147,7 +140,7 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Role Selection */}
+            {/* Role */}
             <div>
               <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                 I am a
@@ -170,12 +163,12 @@ const Register = () => {
             <div>
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
               >
-                {isSubmitting ? 'Registering...' : 'Register'}
+                Register
               </button>
             </div>
+
           </form>
         </div>
       </div>

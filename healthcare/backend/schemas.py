@@ -2,37 +2,37 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
-# User schemas
+# User Schemas
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
-    role: str  # 'patient', 'doctor', 'admin'
+    role: str   # 'patient', 'doctor', 'admin'
 
 class UserRead(BaseModel):
     id: int
     name: str
     email: EmailStr
     role: str
-    
     class Config:
         orm_mode = True
 
-# Authentication schemas
+# Token Schemas
 class Token(BaseModel):
     access_token: str
     token_type: str
 
 class TokenData(BaseModel):
-    id: int
-    email: EmailStr
-    role: str
+    email: str | None = None
+    id: int | None = None
+    role: str | None = None
 
+# Login Schema
 class Login(BaseModel):
     email: EmailStr
     password: str
 
-# Existing application schemas (remain unchanged)
+# Appointment Schemas
 class AppointmentBase(BaseModel):
     doctor_id: int
     date_time: datetime
@@ -45,7 +45,6 @@ class AppointmentRead(AppointmentBase):
     id: int
     patient_id: int
     status: str
-    
     class Config:
         orm_mode = True
 
