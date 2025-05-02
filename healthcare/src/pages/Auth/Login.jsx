@@ -22,23 +22,21 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     try {
       const response = await axios.post('http://localhost:8000/auth/login', formData);
       const token = response.data.access_token;
-      
-      // Store token
       localStorage.setItem('token', token);
       
       // Decode token to get user role
-      const decodedToken = jwt_decode(token);
-      const userRole = decodedToken.role.toLowerCase();
+      const decoded = jwt_decode(token);
+      const userRole = decoded.role.toLowerCase();
       
-      // Redirect based on role
+      // Redirect to role-specific dashboard
       navigate(`/${userRole}`);
-
+      
     } catch (error) {
-      setError(error.response?.data?.detail || 'Login failed. Please check your credentials.');
+      setError(error.response?.data?.detail || 'Login failed.');
     }
   };
 
